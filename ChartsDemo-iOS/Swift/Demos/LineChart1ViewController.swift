@@ -67,11 +67,16 @@ class LineChart1ViewController: DemoBaseViewController {
         ll2.lineDashLengths = [5,5]
         ll2.labelPosition = .rightBottom
         ll2.valueFont = .systemFont(ofSize: 10)
+        
+        let ha1 = ChartHighlightedArea(startValue: 80, endValue: 110)
+        ha1.lineWidth = 2
+        ha1.lineDashLengths = [5, 5]
 
         let leftAxis = chartView.leftAxis
         leftAxis.removeAllLimitLines()
         leftAxis.addLimitLine(ll1)
         leftAxis.addLimitLine(ll2)
+        leftAxis.addHighlightedArea(ha1)
         leftAxis.axisMaximum = 200
         leftAxis.axisMinimum = -50
         leftAxis.gridLineDashLengths = [5, 5]

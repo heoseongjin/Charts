@@ -216,16 +216,19 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
         if xAxis.isEnabled && xAxis.isDrawLimitLinesBehindDataEnabled
         {
             xAxisRenderer.renderLimitLines(context: context)
+            xAxisRenderer.renderHighlightedAreas(context: context)
         }
         
         if leftAxis.isEnabled && leftAxis.isDrawLimitLinesBehindDataEnabled
         {
             leftYAxisRenderer.renderLimitLines(context: context)
+            leftYAxisRenderer.renderHighlightedAreas(context: context)
         }
         
         if rightAxis.isEnabled && rightAxis.isDrawLimitLinesBehindDataEnabled
         {
             rightYAxisRenderer.renderLimitLines(context: context)
+            rightYAxisRenderer.renderHighlightedAreas(context: context)
         }
         
         context.saveGState()
@@ -258,16 +261,19 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
         if xAxis.isEnabled && !xAxis.isDrawLimitLinesBehindDataEnabled
         {
             xAxisRenderer.renderLimitLines(context: context)
+            xAxisRenderer.renderHighlightedAreas(context: context)
         }
         
         if leftAxis.isEnabled && !leftAxis.isDrawLimitLinesBehindDataEnabled
         {
             leftYAxisRenderer.renderLimitLines(context: context)
+            leftYAxisRenderer.renderHighlightedAreas(context: context)
         }
         
         if rightAxis.isEnabled && !rightAxis.isDrawLimitLinesBehindDataEnabled
         {
             rightYAxisRenderer.renderLimitLines(context: context)
+            rightYAxisRenderer.renderHighlightedAreas(context: context)
         }
         
         xAxisRenderer.renderAxisLabels(context: context)
@@ -733,10 +739,6 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
                 // We will only handle highlights on NSUIGestureRecognizerState.Changed
                 
                 _isDragging = false
-                
-                // Prevent the parent scroll view from scrolling
-                _outerScrollView?.nsuiIsScrollEnabled = false
-
             }
         }
         else if recognizer.state == NSUIGestureRecognizerState.changed
@@ -788,6 +790,8 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
                 }
                 
                 _isDragging = false
+                
+                delegate?.chartViewDidEndPanning?(self)
             }
             
             if _outerScrollView !== nil
@@ -795,8 +799,6 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
                 _outerScrollView?.nsuiIsScrollEnabled = true
                 _outerScrollView = nil
             }
-
-            delegate?.chartViewDidEndPanning?(self)
         }
     }
     
@@ -1285,7 +1287,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
 
     /// Centers the viewport to the specified y-value on the y-axis.
     /// This also refreshes the chart by calling setNeedsDisplay().
-    /// 
+    ///
     /// - Parameters:
     ///   - yValue:
     ///   - axis: - which axis should be used as a reference for the y-axis
@@ -1305,7 +1307,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
 
     /// This will move the left side of the current viewport to the specified x-value on the x-axis, and center the viewport to the specified y-value on the y-axis.
     /// This also refreshes the chart by calling setNeedsDisplay().
-    /// 
+    ///
     /// - Parameters:
     ///   - xValue:
     ///   - yValue:
@@ -1672,7 +1674,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
     
     /// If set to true, highlighting per dragging over a fully zoomed out chart is enabled
     /// You might want to disable this when using inside a `NSUIScrollView`
-    /// 
+    ///
     /// **default**: true
     @objc open var isHighlightPerDragEnabled: Bool
     {
